@@ -1,0 +1,13 @@
+{
+  "announcement": {
+    "enabled": false,
+    "text": "",
+    "until": "2026-12-31T23:59:00",
+    "url": null
+  },
+  "ads": {
+    "bannerEnabled": true,
+    "interstitialPerDay": 2
+  },
+  "dailyExtra": []
+}

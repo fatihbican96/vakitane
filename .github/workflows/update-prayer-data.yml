@@ -1,0 +1,72 @@
+# Vakit verisini Diyanet'ten yeniler ve GitHub Pages'te yayınlar.
+#
+# NEDEN AYDA İKİ KEZ: Diyanet'in sayfası yalnızca "bugünden 31 gün" ve
+# "gelecek takvim yılı"nı veriyor. 31 günlük pencere her çalışmada
+# ileri kayar; ayın 1'i ve 15'i çalışınca pencereler üst üste biner ve
+# arada boşluk kalmaz. Bir çalışma başarısız olsa bile bir sonraki
+# boşluğu kapatır.
+#
+# Başarısız olursa (Diyanet erişilemezse, ilçelerin %10'undan fazlası
+# çekilemezse, paket denetimden geçmezse) HİÇBİR ŞEY YAYINLANMAZ: eski
+# paket yerinde kalır, uygulamalar etkilenmez. GitHub hesabın e-postana
+# hata bildirimi gönderir.
+#
+# Yayın adresi: https://fatihbican96.github.io/vakitane/data/
+#
+# Elle çalıştırmak: GitHub > Actions > "Vakit verisini yenile" > Run workflow.
+
+name: Vakit verisini yenile
+
+on:
+  schedule:
+    # Her ayın 1'i ve 15'i, 01:00 UTC (04:00 TSİ).
+    - cron: "0 1 1,15 * *"
+  workflow_dispatch:
+  # Veri araclari ya da bu dosya degisip gonderilince de calissin
+  # (ilk kurulumda elle baslatmaya gerek kalmasin). Botun kendi
+  # commit'i bu yollara dokunmadigi icin dongu olusmaz.
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-prayer-data.yml"
+      - "tool/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prayer-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ~870 ilçe, istekler arası 1 sn bekleme: ~30 dk.
+      - name: Diyanet'ten tüm ilçeleri çek ve birleştir
+        run: python tool/fetch_diyanet.py refresh
+
+      - name: Tek ikili pakete dönüştür
+        run: python tool/build_pack_bundle.py
+
+      - name: Denetle ve yayın klasörüne koy
+        run: python tool/publish_data.py data
+
+      - name: Kaydet ve yayınla
+        run: |
+          git config user.name "vakitane-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/prayer_packs data
+          if git diff --cached --quiet; then
+            echo "Değişiklik yok."
+            exit 0
+          fi
+          git commit -m "Vakit verisi: $(date -u +%Y-%m-%d)"
+          git push

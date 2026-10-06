@@ -1,0 +1,4 @@
+# build_pack_bundle.py ciktisi; yayinlanan kopya docs/data altinda.
+assets/data/prayer_bundle.bin
+__pycache__/
+*.pyc
