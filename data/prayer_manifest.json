@@ -1,9 +1,9 @@
 {
   "format": 1,
-  "version": "2026-10-06T22:31:32Z",
-  "size": 2351683,
-  "sha256": "b916c26ae045a0e8d7aaad62ff97777bf38b0dd6d74b3938a5dacdd683556e52",
-  "firstDay": "2026-09-06",
+  "version": "2026-10-15T06:25:47Z",
+  "size": 2346343,
+  "sha256": "f0520fc18026718838d0f9ab273c71d1615f7433582917d04b919db72b1b9700",
+  "firstDay": "2026-09-15",
   "lastDay": "2027-12-31",
   "districts": 889
 }
