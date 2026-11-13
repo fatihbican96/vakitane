@@ -9,5 +9,8 @@
     "bannerEnabled": true,
     "interstitialPerDay": 2
   },
-  "dailyExtra": []
+  "dailyExtra": [],
+  "latestVersion": {
+    "android": "1.7.8"
+  }
 }
