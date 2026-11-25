@@ -11,6 +11,7 @@
   },
   "dailyExtra": [],
   "latestVersion": {
-    "android": "1.7.9"
+    "android": "1.8.0",
+    "ios": "1.8.0"
   }
 }
